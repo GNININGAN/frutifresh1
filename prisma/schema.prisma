@@ -1,0 +1,246 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Utilisateur{
+  id Int @id @default(autoincrement())
+  nom String
+  prenom String
+  numero Int
+  motDePasse String
+  email String
+  adresse String
+  role RoleUtil
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  commande Commande[]
+  commentaire Commentaire[]
+  admin Admin[]
+  reservation Reservation[]
+
+}
+model Plat{
+  id Int @id @default(autoincrement())
+  nom String
+  prix Int
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  categorie Categorie @relation(fields:[idCategorie], references: [id])
+  idCategorie Int
+  platPromotion PlatPromotion[]
+  platCompositionDePlat PlatCompositionDePlat[]
+  platMenu PlatMenu[]
+  platCommande PlatCommande[]
+  
+}
+model Categorie{
+  id Int @id @default(autoincrement())
+  nom String
+  image String
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  plat Plat[]
+}
+model Commande{
+  id Int @id @default(autoincrement())
+  date DateTime
+  prixTotal Float
+  statut StatutCom
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  utilisateur Utilisateur @relation(fields:[utilisateurId], references: [id])
+  utilisateurId Int
+  platCommande PlatCommande[]
+  livraison Livraison @relation(fields:[idLivraison], references: [id])
+  idLivraison Int
+  paiement Paiement[]
+}
+model Menu{
+  id Int @id @default(autoincrement())
+  nom String
+  prix Int
+  plats String
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  platMenu PlatMenu[]
+}
+model PlatCommande{
+  id Int @id @default(autoincrement())
+  quantite Int
+  prix Int
+  plat Plat @relation(fields:[idPlat], references: [id])
+  idPlat Int
+  commande Commande @relation(fields:[idCommande], references: [id])
+  idCommande Int
+}
+model StockProduit{
+  id Int @id @default(autoincrement())
+  nom String
+  quantite Int
+  prix Int
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  admin Admin @relation(fields:[idAdmin], references: [id])
+  idAdmin Int
+}
+model Admin{
+    id Int @id @default(autoincrement())
+    pseudo String
+    stockProduit StockProduit []
+    utilisateur Utilisateur @relation(fields:[idUtilisateur], references: [id])
+    idUtilisateur Int
+}
+model Espace{
+  id Int @id @default(autoincrement())
+  nom String
+  lieu String
+  taille Int
+  image String
+  prix Int
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+}
+model Reservation{
+  id Int @id @default(autoincrement())
+  date DateTime
+  heure DateTime
+  statut String
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  utilisateur Utilisateur @relation(fields:[utilisateurId], references: [id])
+  utilisateurId Int
+  paiement Paiement[]
+}
+model Paiement{
+  id Int @id @default(autoincrement())
+  montant Int
+  motif String
+  statut String
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  commande Commande @relation(fields:[idCommande], references: [id])
+  idCommande Int
+  reservation Reservation @relation(fields:[idReservation], references: [id])
+  idReservation Int
+}
+model Livraison{
+  id Int @id @default(autoincrement())
+  adresse String
+  date DateTime
+  heure DateTime
+  statut StatutLiv
+  longitude Float
+  latitude Float
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  commande Commande[]
+}
+model Commentaire{
+  id Int @id @default(autoincrement())
+  contenu String
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  utilisateur Utilisateur @relation(fields:[idUtilisateur], references: [id])
+  idUtilisateur Int
+}
+model PlatMenu{
+  id Int @id @default(autoincrement())
+  nmbr Int
+  plat Plat @relation(fields:[idPlat], references: [id])
+  idPlat Int
+  menu Menu @relation(fields:[idMenu], references: [id])
+  idMenu Int
+}
+model Promotion{
+  id Int @id @default(autoincrement())
+  dateDebut DateTime
+  dateFin DateTime
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  platPromotion PlatPromotion[]
+}
+model PlatPromotion{
+  id Int @id @default(autoincrement())
+  ancienPrix Int
+  nouveauPrix Int
+  plat Plat @relation(fields:[idPlat], references: [id])
+  idPlat Int
+  promotion Promotion @relation(fields:[idPromotion], references: [id])
+  idPromotion Int
+}
+model CompositionDePlat{
+  id Int @id @default(autoincrement())
+  nom String
+  quantite Int
+  isVisible   Boolean       @default(true)
+  isActive    Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  platCompositionDePlat PlatCompositionDePlat[]
+}
+model PlatCompositionDePlat{
+  id Int @id @default(autoincrement())
+  plat Plat @relation(fields:[idPlat], references: [id])
+  idPlat Int
+  compositionDePlat CompositionDePlat @relation(fields:[idCompositionDePlat], references: [id])
+  idCompositionDePlat Int
+}
+
+enum StatutCom{
+  passer
+  enCours
+  termine
+}
+enum StatutLiv{
+  enCours
+  effectuer
+  annuler
+}
+enum StatutPaie{
+  effectuer
+  enCours
+  nonEffectuer
+}
+enum RoleUtil{
+  admin
+  chef
+  personnel
+  livreur
+  client
+}
