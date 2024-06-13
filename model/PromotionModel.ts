@@ -1,9 +1,9 @@
 export class PromotionModel{
     id: number;
-    dateDebut : Date;
-    dateFin: Date;
+    dateDebut : String;
+    dateFin: String;
    
-constructor(id: number, dateDebut: Date, dateFin: Date)
+constructor(id: number, dateDebut: String, dateFin: String)
 {
     this.id=id;
     this.dateDebut=dateDebut;

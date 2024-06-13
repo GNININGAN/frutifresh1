@@ -4,9 +4,9 @@ export class LivraisonModel{
     date: Date
     heure: Date
     statut: String
-    longitude: String
-    latitude: String
-constructor(id: number, adresse: String, date: Date, heure: Date, statut: String, longitude: String, latitude: String, idCommande: number, idReservation: number)
+    longitude: number
+    latitude: number
+constructor(id: number, adresse: String, date: Date, heure: Date, statut: String, longitude: number, latitude: number, idCommande: number, idReservation: number)
 {
     this.id=id;
     this.adresse=adresse;
