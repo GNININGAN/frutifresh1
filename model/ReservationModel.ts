@@ -4,16 +4,16 @@ export class ReservationModel{
     heure: Date;
     statut: String;
     montant: number;
-    utilisateurId: number;
+    idUtilisateur: number;
 
-constructor(id: number,date: Date,heure: Date, statut: String,montant: number,utilisateurId: number )
+constructor(id: number,date: Date,heure: Date, statut: String,montant: number,idUtilisateur: number )
 {
     this.id=id;
     this.date=date;
     this.heure=heure;
     this.statut=statut;
     this.montant=montant;
-    this.utilisateurId=utilisateurId;
+    this.idUtilisateur=idUtilisateur;
     
 }
 }
