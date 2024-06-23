@@ -80,10 +80,10 @@ export default function Home() {
           <TabsContent value="account">
             <div className="grid grid-cols-1 md:grid-cols-3  xl:grid-cols-4 gap-4"> 
               {
-                [1,2,3,4].map((items, index) => {
+                plats.map((items, index) => {
                   return (
                     <div key={index}>
-                      <ProductCard imageUrl={"/images/03.jpg"} name={"product Name"} price={"5000"} id={0} />
+                      <ProductCard imageUrl={"/images/04.jpg"} name={items.name} price={"5000"} id={index} />
                     </div>
                   )
                 })

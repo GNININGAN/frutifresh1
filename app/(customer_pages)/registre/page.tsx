@@ -6,9 +6,17 @@ import { useState } from "react";
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input } from 'antd';
 import Link from "next/link";
+import { UtilisateurModel } from "@/model/UtilisateurModel";
+import { Api } from "@/app/api/Api";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Regisgre() {
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const {toast} = useToast();
+    const route = useRouter();
+
 
     const formik = useFormik({
         initialValues: {
@@ -18,25 +26,55 @@ export default function Regisgre() {
             lastName: "",
             firstName: "",
             password2: "",
+            address: "",
         },
         validationSchema: Yup.object({
             phone: Yup.string().required("Le numéro de téléphone est requis"),
             password: Yup.string().required("Le mot de passe est requis"),
             email: Yup.string().email("Email invalide").required("L'email est requis"),
             lastName: Yup.string().required("Le nom est requis"),
+            address: Yup.string().required("Le prénom est requis"),
             firstName: Yup.string().required("Le prénom est requis"),
             password2: Yup.string().required("Le mot de passe est requis"),
         }),
 
-        onSubmit: (values) => {
-            console.log(values)
+        onSubmit:async (values) => {
+            setLoading(true);
+
+            if (values.password == values.password2) {
+                const userModel = new UtilisateurModel(values.firstName, values.lastName, +(values.phone), values.password, values.email, values.address, "client");
+                
+                const resp = await Api.create("/api/user", userModel);
+                if(resp) {
+                    toast({
+                        title: "Vous vous ete inscrit avec succès."
+                    });
+                    route.push("/login");
+                }
+                else {
+                    toast({
+                        title: "Une erreur est survenu lors de l'enregistrement. reéssayer!!",
+                        variant: "destructive",
+                    });
+                    
+                    setLoading(false);
+                }
+
+            } else {
+                 toast({
+                        title: "les mots de passe ne sont pas conformes",
+                        variant: "destructive",
+                    });
+                setLoading(false);
+            }
+            setLoading(false);
         }
     })
 
     return (
-        <main className="flex flex-col space-y-10 items-center justify-center">
+        <main className="flex flex-col space-y-10 items-center justify-center px-4">
 
-            <div className="flex flex-col  xl:w-[700px] p-5 bg-gray-100 rounded-md space-y-10 items-center justify-center">
+            <div className="flex flex-col  xl:w-[700px] p-5 bg-gray-100 rounded-md space-y-10 px-4 items-center justify-center">
                 <div>
                     <h1 className="font-black text-center text-4xl">Creer un compte.</h1>
 
@@ -109,6 +147,19 @@ export default function Regisgre() {
                                 onBlur={formik.handleBlur}
                             />
                         </div>
+                    </div>
+{/** address */}
+                    <div>
+                        <label className={formik.touched.address && formik.errors.address ? "text-red-600" : "text-gray-600"}>{formik.touched.address && formik.errors.address ? formik.errors.address : "Votre address"} <span className="text-red-600">*</span>
+                        </label>
+                        <Input
+                            type="text"
+                            name="address"
+                            className="md:w-[300px] h-[28px]"
+                            value={formik.values.address}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                                />
                     </div>
 
 

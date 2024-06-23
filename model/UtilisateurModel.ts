@@ -1,15 +1,15 @@
 export class UtilisateurModel{
-id :number;
-nom :String;
-prenom :String;
-numero :String;
-motDePasse :String;
-email :String;
-adresse :String;
-role :String;
 
-constructor (id:number, nom:String, prenom:String, numero: String, motDePasse: String, email: String, adresse: String, role: String ){
-    this.id=id;
+nom :string;
+prenom :string;
+numero :number;
+motDePasse :string;
+email :string;
+adresse :string;
+role :string;
+id? :number;
+
+constructor ( nom:string, prenom:string, numero: number, motDePasse: string, email: string, adresse: string, role: string){
     this.nom=nom;
     this.prenom=prenom;
     this.numero=numero;

@@ -12,14 +12,33 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { CirclePlus, SquareMinus, SquarePlus, ShoppingCart } from "lucide-react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast"
+import { useDispatch } from "react-redux"
+import { addProduct } from "@/redux/features/cart-slice"
+import CartModel from "@/model/CartModel"
+import { Datas } from "@/lib/utils"
 
-
+interface Plat {
+    id: number;
+    price: number;
+    image: string;
+    name: string;
+}
 
 const AddToCartDialog = ({ id }: { id: number }) => {
     const [qte, setQte] = useState(1);
     const { toast } = useToast();
+    const dispatch = useDispatch();
+    const  [product, setProduct] = useState<Plat>();
+
+//Suggested code may be subject to a license. Learn more: ~LicenseLog:3323359107.
+    useEffect(() => {
+        setProduct(Datas.selectElementById(Datas.plats, id));
+    }, [])
+
+    
+    
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -34,7 +53,7 @@ const AddToCartDialog = ({ id }: { id: number }) => {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex md:flex-row items-center flex-col space-y-5 md:space-y-0 md:space-x-5">
-                    <Image src={"/images/02.jpg"}
+                    <Image src={String(product?.image)}
                         alt="product"
                         width={250}
                         height={280}
@@ -45,9 +64,9 @@ const AddToCartDialog = ({ id }: { id: number }) => {
 
                     <div className="flex flex-col space-y-5">
                         <div>
-                            <h1 className="text-md font-bold">Product Name</h1>
+                            <h1 className="text-md font-bold">String(product.name)</h1>
                         <h1 className="text-[12px] text-gray-600 ">description</h1>
-                        <h1 className="font-light text-[12px]">Prix <span className="font-bold text-red-600"> 5000 </span> FCFA </h1>
+                        <h1 className="font-light text-[12px]">Prix <span className="font-bold text-red-600"> Number(product.price)</span> FCFA </h1>
                         </div>
                         
 
@@ -74,6 +93,13 @@ const AddToCartDialog = ({ id }: { id: number }) => {
 
                         <DialogClose asChild>
                             <Button onClick={() => {
+                                  const modelCart = new CartModel(Number(product?.id), String(product?.name), String(product?.image), Number(product?.price), Number(Number(product?.price) * qte), qte);
+                                  dispatch(addProduct(modelCart));
+                                  setQte(1);
+                                  toast({
+                                      title: "Panier",
+                                      description: "Article ajouté au panier!!",
+                                  })
                                 toast({
                                     title: "Le produit à été ajouter au panier",
                                     description: "Merci de continuer votre course"

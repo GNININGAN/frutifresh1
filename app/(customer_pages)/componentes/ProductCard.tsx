@@ -16,11 +16,11 @@ const ProductCard = ({imageUrl,
         <div className="flex flex-col space-y-3  w-[200px] h-auto bg-gray-100 rounded-md ">
             <Image src={imageUrl} 
             alt="product" 
-            width={150} 
+            width={200} 
             height={150} 
             priority
             quality={100}
-            className="object-cover content-center w-full rounded-md"
+            className="object-cover h-[150px] bg-cover rounded-md"
             />
             <div className="flex flex-col space-y-2 m-3">
                 <h1 className="font-black">{name}</h1>

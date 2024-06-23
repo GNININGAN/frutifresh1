@@ -6,9 +6,18 @@ import { useState } from "react";
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input } from 'antd';
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { RootState } from "@/redux/store";
+import { Api } from "@/app/api/Api";
+import { logIn } from "@/redux/features/auth-slice";
+import { LoginModel } from "@/model/LoginModel";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const dispatch = useDispatch();
+    const route = useRouter()
 
     const formik = useFormik({
         initialValues: {
@@ -20,8 +29,22 @@ export default function Login() {
             password: Yup.string().required("Le mot de passe est requis"),
         }),
 
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             console.log(values)
+            setLoading(true)
+            const loginLodel = new LoginModel(Number(values.phone), values.password);
+            const resp = await Api.create("/api/login", loginLodel);
+            if(resp.ok) {
+                dispatch(logIn(resp.id));
+               
+                    route.push("/");
+                
+            }
+            else {
+                setErrorMsg("L'utilisateur n'existe pas")
+                setLoading(false)
+            }
+            setLoading(false)
         }
     })
 

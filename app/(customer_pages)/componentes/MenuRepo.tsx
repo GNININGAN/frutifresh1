@@ -38,7 +38,7 @@ const MenuRepo = () => {
                 <AlignJustify/>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel></DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {
                     links.map((items, index) => {
